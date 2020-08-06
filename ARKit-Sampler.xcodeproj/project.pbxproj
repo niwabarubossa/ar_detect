@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2BBB30FC24DC2F4800663734 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 2BBB30FB24DC2F4800663734 /* GoogleService-Info.plist */; };
 		4F5AA0984FD0409AEB73AC4E /* Pods_ARKit_Sampler.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7B6FA6DDC58BD46FBC840EC1 /* Pods_ARKit_Sampler.framework */; };
 		8A086D941F71941C00951ABF /* RootViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A086D931F71941C00951ABF /* RootViewCell.swift */; };
 		8A086D971F71968C00951ABF /* Simple.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8A086D961F71968C00951ABF /* Simple.storyboard */; };
@@ -59,6 +60,7 @@
 
 /* Begin PBXFileReference section */
 		1F13E8C5860DBEF1BD063CF8 /* Pods-ARKit-Sampler.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ARKit-Sampler.debug.xcconfig"; path = "Pods/Target Support Files/Pods-ARKit-Sampler/Pods-ARKit-Sampler.debug.xcconfig"; sourceTree = "<group>"; };
+		2BBB30FB24DC2F4800663734 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		7B6FA6DDC58BD46FBC840EC1 /* Pods_ARKit_Sampler.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ARKit_Sampler.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		8A086D931F71941C00951ABF /* RootViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RootViewCell.swift; sourceTree = "<group>"; };
 		8A086D961F71968C00951ABF /* Simple.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Simple.storyboard; sourceTree = "<group>"; };
@@ -212,6 +214,7 @@
 		8A8921BD1F718E040087C2B0 = {
 			isa = PBXGroup;
 			children = (
+				2BBB30FB24DC2F4800663734 /* GoogleService-Info.plist */,
 				8A189524214350CC00282899 /* usdz */,
 				8A086D9C1F7198D900951ABF /* common */,
 				8A9C49D71F71C65B00C8CB69 /* mlmodels */,
@@ -423,6 +426,7 @@
 				8A9C49CD1F71BF0500C8CB69 /* ARDrawing.storyboard in Resources */,
 				8A430D332020D13200B646D3 /* ARSCNProgram.storyboard in Resources */,
 				8A086D971F71968C00951ABF /* Simple.storyboard in Resources */,
+				2BBB30FC24DC2F4800663734 /* GoogleService-Info.plist in Resources */,
 				8A086DA81F719C2600951ABF /* PlaneDetection.storyboard in Resources */,
 				8A086D9B1F7197F700951ABF /* models.scnassets in Resources */,
 				8A783E562078D46F00B3A2D0 /* ShapedPlane.storyboard in Resources */,
@@ -443,11 +447,27 @@
 			);
 			inputPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-ARKit-Sampler/Pods-ARKit-Sampler-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/BoringSSL-GRPC/openssl_grpc.framework",
 				"${BUILT_PRODUCTS_DIR}/ColorSlider/ColorSlider.framework",
+				"${BUILT_PRODUCTS_DIR}/GoogleUtilities/GoogleUtilities.framework",
+				"${BUILT_PRODUCTS_DIR}/PromisesObjC/FBLPromises.framework",
+				"${BUILT_PRODUCTS_DIR}/abseil/absl.framework",
+				"${BUILT_PRODUCTS_DIR}/gRPC-C++/grpcpp.framework",
+				"${BUILT_PRODUCTS_DIR}/gRPC-Core/grpc.framework",
+				"${BUILT_PRODUCTS_DIR}/leveldb-library/leveldb.framework",
+				"${BUILT_PRODUCTS_DIR}/nanopb/nanopb.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/openssl_grpc.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/ColorSlider.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GoogleUtilities.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/FBLPromises.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/absl.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/grpcpp.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/grpc.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/leveldb.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/nanopb.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;

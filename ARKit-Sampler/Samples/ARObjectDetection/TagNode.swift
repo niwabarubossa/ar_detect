@@ -8,10 +8,14 @@
 
 import SceneKit
 import Vision
+import Firebase
+import FirebaseCore
+import FirebaseFirestore
 
 //SCN Node 3D座標空間での位置と変換を表すシーングラフの構造要素。ジオメトリ、ライト、カメラ、またはその他の表示可能なコンテンツを接続できます
 class TagNode: SCNNode {
     
+    let db = Firestore.firestore()
     var data:Dictionary<String,String> = [
         "desk": "作業効率が上がる、スタンディングデスクとは？",
         "bool jacket": "デザイン原則がたくさん隠れています。\n例えば、色の対比です。黒と白という色度/明度/彩度の変化率が大きいほど、見やすいデザインとなります。\nただし多用は厳禁です。",
@@ -29,6 +33,8 @@ class TagNode: SCNNode {
         "ball":"ボール。\n４号球〜６号くらいが一般的。",
         "shoes":"靴。\n "
     ]
+    
+    var savedIdentifierArray:[String] = []
 
     //ここに外部から識別情報が付与される
     var classificationObservation: VNClassificationObservation? {
@@ -47,11 +53,13 @@ class TagNode: SCNNode {
 //            var textNode = SCNNode(geometry: text)
             DispatchQueue.main.async(execute: {
                 self.addChildNode(textNode)
+//                self.saveData(name: val)
             })
         }else{
             var textNode = SCNNode.textNode(text: shorten + ":未登録")
             DispatchQueue.main.async(execute: {
                 self.addChildNode(textNode)
+                self.saveData(name: shorten)
             })
         }
 //        let textNode = SCNNode.textNode(text: "niwa niwa")
@@ -65,4 +73,24 @@ class TagNode: SCNNode {
             self.addChildNode(sphereNode)
         })
     }    
+}
+
+extension TagNode{
+    private func saveData(name:String){
+        
+        if self.savedIdentifierArray.contains(name) { return }
+        self.savedIdentifierArray.append(name)
+        
+        let docRef = db.collection("objects").document("\(name)")
+        docRef.setData([
+            "name": name,
+            "detail": "",
+            "count": FieldValue.increment(Int64(1))],merge: true){ err in
+            if let err = err {
+                     print("Error writing document: \(err)")
+            } else {
+                print("ok!")
+            }
+        }
+    }
 }
