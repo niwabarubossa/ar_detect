@@ -14,15 +14,24 @@ import Vision
 
 class ARObjectDetectionViewController: UIViewController, ARSCNViewDelegate {
 
+    //機械学習のモデル
     private var model: VNCoreMLModel!
+    
+    //場所の話
     private var screenCenter: CGPoint?
 
+    //直列処理　順番に処理されるDispatch
     private let serialQueue = DispatchQueue(label: "com.shu223.arkit.objectdetection")
+    
+    //ただのスイッチ
     private var isPerformingCoreML = false
-
+    //結果保存用の変数 画像解析リクエストによって生成された分類情報。
     private var latestResult: VNClassificationObservation?
+    
+    //自分で作成したオリジナルクラス　　3D座標空間での位置と変換を表すシーングラフの構造要素。
     private var tags: [TagNode] = []
     
+    //背景が勝手にライブビデオカメラだよ〜
     @IBOutlet var sceneView: ARSCNView!
     @IBOutlet var trackingStateLabel: UILabel!
     @IBOutlet var mlStateLabel: UILabel!
@@ -60,6 +69,7 @@ class ARObjectDetectionViewController: UIViewController, ARSCNViewDelegate {
     
     // MARK: - Private
     
+    //どうやって実行するか、MLを呼び出されたとき何をするのか。　結果をlatestResultに代入している
     private func coreMLRequest() -> VNCoreMLRequest {
         let request = VNCoreMLRequest(model: model, completionHandler: { (request, error) in
             guard let best = request.results?.first as? VNClassificationObservation  else {
@@ -68,7 +78,8 @@ class ARObjectDetectionViewController: UIViewController, ARSCNViewDelegate {
             }
 //            print("best: ")
             DispatchQueue.main.async(execute: {
-                self.mlStateLabel.text = "\(best.identifier) \(best.confidence * 100)"
+//                self.mlStateLabel.text = "\(best.identifier) \(best.confidence * 100)"
+                self.mlStateLabel.text = "niwa niwa niwa"
             })
 
             // don't tag when the result is enough confident
@@ -77,6 +88,7 @@ class ARObjectDetectionViewController: UIViewController, ARSCNViewDelegate {
                 return
             }
 
+            //ここで、空間にタグを付与するものを
             if self.isFirstOrBestResult(result: best) {
                 self.latestResult = best
                 self.hitTest()
@@ -91,8 +103,9 @@ class ARObjectDetectionViewController: UIViewController, ARSCNViewDelegate {
         return request
     }
     
+    //実行を呼び出す
     private func performCoreML() {
-
+//ここまで理解した　30minde
         serialQueue.async {
             guard !self.isPerformingCoreML else {return}
             guard let imageBuffer = self.sceneView.session.currentFrame?.capturedImage else {return}
@@ -143,6 +156,7 @@ class ARObjectDetectionViewController: UIViewController, ARSCNViewDelegate {
         }
     }
     
+    //
     private func hitTest(_ pos: CGPoint) {
         let nodeResults = sceneView.hitTest(pos, options: [SCNHitTestOption.boundingBoxOnly: true])
         for nodeResult in nodeResults {
@@ -189,12 +203,14 @@ class ARObjectDetectionViewController: UIViewController, ARSCNViewDelegate {
 
     // MARK: - ARSCNViewDelegate
     
+    //アクション、アニメーション、および物理が評価される前に発生する必要がある更新を実行するようデリゲートに指示します。
     func renderer(_ renderer: SCNSceneRenderer, updateAtTime time: TimeInterval) {
         performCoreML()
     }
 
     // MARK: - ARSessionObserver
     
+    //ARKitのデバイス位置の追跡品質の更新時に呼ばれる。
     func session(_ session: ARSession, cameraDidChangeTrackingState camera: ARCamera) {
         print("trackingState: \(camera.trackingState)")
         trackingStateLabel.text = camera.trackingState.description
