@@ -92,5 +92,18 @@ extension TagNode{
                 print("ok!")
             }
         }
+        
+        let contentRef = db.collection("objects").document("\(name)").collection("contents").document()
+        contentRef.setData([
+            "content": "ここに思ったことが登録されます。",
+            "is_review": false,
+        ]){ err in
+            if let err = err {
+                     print("Error writing document: \(err)")
+            } else {
+                print("ok!")
+            }
+        }
+        
     }
 }
