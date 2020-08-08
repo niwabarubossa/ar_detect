@@ -11,6 +11,7 @@ import UIKit
 import ARKit
 import CoreML
 import Vision
+import FirebaseFirestore
 
 class ARObjectDetectionViewController: UIViewController, ARSCNViewDelegate {
 
@@ -30,6 +31,8 @@ class ARObjectDetectionViewController: UIViewController, ARSCNViewDelegate {
     
     //自分で作成したオリジナルクラス　　3D座標空間での位置と変換を表すシーングラフの構造要素。
     private var tags: [TagNode] = []
+    
+    private var firestore_content_array:[String:String] = [:]
     
     //背景が勝手にライブビデオカメラだよ〜
     @IBOutlet var sceneView: ARSCNView!
@@ -76,7 +79,6 @@ class ARObjectDetectionViewController: UIViewController, ARSCNViewDelegate {
                 self.isPerformingCoreML = false
                 return
             }
-//            print("best: ")
             DispatchQueue.main.async(execute: {
 //                self.mlStateLabel.text = "\(best.identifier) \(best.confidence * 100)"
                 self.mlStateLabel.text = "niwa niwa niwa"
@@ -182,9 +184,13 @@ class ARObjectDetectionViewController: UIViewController, ARSCNViewDelegate {
         let tagNode = TagNode()
         tagNode.transform = SCNMatrix4(hitTestResult.worldTransform)
         tags.append(tagNode)
-        tagNode.classificationObservation = latestResult
-        sceneView.scene.rootNode.addChildNode(tagNode)
+        //これで発火して、TagNode,addTextNodeg走る 今はそれを走らせていない
+        guard let text = latestResult?.identifier else {return}
+        let bestMatchWord = text.components(separatedBy: ", ").first!
+        self.searchFirestore(search_text: bestMatchWord,tagNode: tagNode)
     }
+    
+//    private func
 
     private func removeTag(tag: TagNode) {
         tag.removeFromParentNode()
@@ -223,3 +229,37 @@ class ARObjectDetectionViewController: UIViewController, ARSCNViewDelegate {
     }
 }
 
+extension ARObjectDetectionViewController{
+    
+    
+    private func searchFirestore(search_text:String,tagNode:TagNode){
+        let db = Firestore.firestore()
+        db.collection("objects").document("\(search_text)").collection("contents").whereField("is_review", isEqualTo: true).getDocuments() { (querySnapshot, err) in
+            if let err = err {
+                print("Error getting documents: \(err)")
+            } else {
+                var temp_results = ""
+                var temp_data:[String:AnyObject] = [:]
+                for document in querySnapshot!.documents {
+                    temp_data = document.data() as! [String:AnyObject]
+                    if let content = temp_data["content"] {
+                        temp_results += "\n" + (content as! String)
+                    }
+                }
+                
+                if let set_content = self.firestore_content_array[search_text] {
+                    //すでに検索ずみ
+                    tagNode.firestore_content = set_content
+                    tagNode.classificationObservation = self.latestResult
+                    self.sceneView.scene.rootNode.addChildNode(tagNode)
+                }else{
+                    //まだ検索していない
+                    self.firestore_content_array[search_text] = temp_results
+                    tagNode.firestore_content = temp_results
+                    tagNode.classificationObservation = self.latestResult
+                    self.sceneView.scene.rootNode.addChildNode(tagNode)
+                }
+            }
+        }
+    }
+}
