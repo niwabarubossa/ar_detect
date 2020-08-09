@@ -18,16 +18,18 @@ class TagNode: SCNNode {
     let db = Firestore.firestore()
     
     var savedIdentifierArray:[String] = []
+    var isFirst:Bool = true
 
     //ここに外部から識別情報が付与される
     var classificationObservation: VNClassificationObservation? {
         didSet {
+//            addTextNode()
         }
     }
     
     var tagContent: VNClassificationObservation? {
         didSet {
-            addTextNode()
+//            addTextNode()
         }
     }
     
@@ -41,13 +43,14 @@ class TagNode: SCNNode {
     
     private func addTextNode() {
         //ここが、テキスト代入される。空間に実際に表示される識別結果
-        if self.firestore_content != "no data"{
+        if self.firestore_content != "no data" && self.isFirst {
+            self.isFirst = false
             let textNode = SCNNode.textNode(text: self.firestore_content)
             DispatchQueue.main.async(execute: {
                 self.addChildNode(textNode)
             })
+            addSphereNode(color: UIColor.green)
         }
-        addSphereNode(color: UIColor.green)
     }
     
     private func addSphereNode(color: UIColor) {

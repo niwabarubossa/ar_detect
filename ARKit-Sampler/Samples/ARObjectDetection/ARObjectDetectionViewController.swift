@@ -124,6 +124,7 @@ class ARObjectDetectionViewController: UIViewController, ARSCNViewDelegate {
         }
     }
     
+    //タグ管理してるっぽいのになぁ
     private func isFirstOrBestResult(result: VNClassificationObservation) -> Bool {
         for tag in tags {
             guard let prevRes = tag.classificationObservation else {continue}
@@ -184,9 +185,12 @@ class ARObjectDetectionViewController: UIViewController, ARSCNViewDelegate {
         let tagNode = TagNode()
         tagNode.transform = SCNMatrix4(hitTestResult.worldTransform)
         tags.append(tagNode)
+        tagNode.classificationObservation = latestResult
+        //ここまで一緒
         //これで発火して、TagNode,addTextNodeg走る 今はそれを走らせていない
         guard let text = latestResult?.identifier else {return}
         let bestMatchWord = text.components(separatedBy: ", ").first!
+        //引数のための加工
         self.searchFirestore(search_text: bestMatchWord,tagNode: tagNode)
     }
     
@@ -250,13 +254,11 @@ extension ARObjectDetectionViewController{
                 if let set_content = self.firestore_content_array[search_text] {
                     //すでに検索ずみ
                     tagNode.firestore_content = set_content
-                    tagNode.classificationObservation = self.latestResult
                     self.sceneView.scene.rootNode.addChildNode(tagNode)
                 }else{
                     //まだ検索していない
                     self.firestore_content_array[search_text] = temp_results
                     tagNode.firestore_content = temp_results
-                    tagNode.classificationObservation = self.latestResult
                     self.sceneView.scene.rootNode.addChildNode(tagNode)
                 }
             }
